@@ -2,6 +2,10 @@
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  // Check if we're in a browser environment to avoid SSR issues
+  const isClient = typeof window !== 'undefined';
+  
+  // Only render Links if we're in a client environment
   return (
     <footer className="bg-white border-t mt-auto">
       <div className="container mx-auto px-4 py-8">
@@ -18,19 +22,25 @@ const Footer = () => {
             <h3 className="font-bold text-lg mb-4">Shop</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  All Products
-                </Link>
+                {isClient && (
+                  <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    All Products
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  Featured Items
-                </Link>
+                {isClient && (
+                  <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    Featured Items
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  New Arrivals
-                </Link>
+                {isClient && (
+                  <Link to="/products" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    New Arrivals
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
@@ -39,19 +49,25 @@ const Footer = () => {
             <h3 className="font-bold text-lg mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/contact" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  Contact Us
-                </Link>
+                {isClient && (
+                  <Link to="/contact" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    Contact Us
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/faq" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  FAQ
-                </Link>
+                {isClient && (
+                  <Link to="/faq" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    FAQ
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/shipping" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  Shipping & Returns
-                </Link>
+                {isClient && (
+                  <Link to="/shipping" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    Shipping & Returns
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
@@ -60,14 +76,18 @@ const Footer = () => {
             <h3 className="font-bold text-lg mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/terms" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  Terms & Conditions
-                </Link>
+                {isClient && (
+                  <Link to="/terms" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    Terms & Conditions
+                  </Link>
+                )}
               </li>
               <li>
-                <Link to="/privacy" className="text-sm text-gray-600 hover:text-ecommerce-primary">
-                  Privacy Policy
-                </Link>
+                {isClient && (
+                  <Link to="/privacy" className="text-sm text-gray-600 hover:text-ecommerce-primary">
+                    Privacy Policy
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
