@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const BASE_URL = 'https://production.vercel.app';
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = 'https://shoping-time-backend.vercel.app';
+// const BASE_URL = 'http://localhost:8000';
 
 const makeCallApi = ({
   url = "",
