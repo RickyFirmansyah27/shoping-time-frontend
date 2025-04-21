@@ -30,7 +30,7 @@ export const useEditProduct = () => {
   return useMutation({
     ...DEFAULT_QUERY_OPTIONS,
     mutationFn: ({ id, body }: { id: string; body: EditProduct }) =>
-      apiPut(`${basePath}/${id}`, body),
+      apiPut(`${basePath}/edit/${id}`, body),
   });
 };
 

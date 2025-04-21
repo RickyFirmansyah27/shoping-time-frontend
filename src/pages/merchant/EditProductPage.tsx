@@ -3,13 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { get } from "lodash";
 import Layout from "@/components/Layout";
 import { authService } from "@/services/auth-service";
-import { useGetProductById } from "@/services/product-service";
+import { useGetProductById, useEditProduct } from "@/services/product-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { X } from "lucide-react";
+import { convertFileToBase64 } from "@/lib/utils";
+import { EditProduct } from "@/services/types";
 
 const EditProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,7 @@ const EditProductPage = () => {
   const { data: dataProduct, isLoading, error } = useGetProductById(id);
   const product = get(dataProduct, "data.data.productData", null);
 
+  const { mutateAsync: editProduct, isPending } = useEditProduct();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -28,7 +31,6 @@ const EditProductPage = () => {
     sku: "",
   });
   const [images, setImages] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -39,7 +41,7 @@ const EditProductPage = () => {
         quantity: product.quantity || 0,
         sku: product.sku || "",
       });
-      setImages(product?.image);
+      setImages(product?.image || []);
     }
   }, [product]);
 
@@ -58,24 +60,13 @@ const EditProductPage = () => {
     }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      const newImages: string[] = [];
-
-      filesArray.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (reader.result && typeof reader.result === "string") {
-            newImages.push(reader.result);
-            if (newImages.length === filesArray.length) {
-              setImages([...images, ...newImages]);
-              console.log("new images added:", newImages);
-            }
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+      const newImages = await Promise.all(
+        filesArray.map((file) => convertFileToBase64(file))
+      );
+      setImages([...images, ...newImages]);
     }
   };
 
@@ -83,21 +74,34 @@ const EditProductPage = () => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (!id) {
+      toast.error("Product ID is missing");
+      return;
+    }
 
     if (images.length === 0) {
       toast.error("Please upload at least one product image");
       return;
     }
 
-    setIsSubmitting(true);
+    const payload: EditProduct = {
+      productName: formData.title,
+      description: formData.description,
+      price: Number(formData.price),
+      sku: formData.sku,
+      quantity: Number(formData.quantity),
+      image: images, // Images are already base64 strings
+    };
 
-    setTimeout(() => {
-      toast.success("Product updated successfully!");
+    try {
+      await editProduct({ id, body: payload });
       navigate("/merchant/products");
-      setIsSubmitting(false);
-    }, 1000);
+    } catch (error) {
+      // Error handling is already done in useEditProduct
+    }
   };
 
   if (isLoading) {
@@ -245,8 +249,8 @@ const EditProductPage = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Updating Product..." : "Update Product"}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Updating Product..." : "Update Product"}
               </Button>
             </div>
           </form>

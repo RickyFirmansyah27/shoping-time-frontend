@@ -45,10 +45,11 @@ export interface AddProduct {
   image: string[];
 }
 
-export interface EditProduct {
-  image?: string;
-  productName?: string;
-  sku?: string;
-  price?: number;
-  quantity?: number;
-}
+export type EditProduct = {
+  productName: string;
+  description: string;
+  price: number;
+  sku: string;
+  quantity: number;
+  image: string[];
+};
