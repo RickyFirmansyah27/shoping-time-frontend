@@ -2,21 +2,24 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
+import { get } from "lodash";
 import ProductCard from "@/components/ProductCard";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
+import { useGetAllProducts } from "@/services/product-service";
 
 const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const featuredProducts = products.slice(0, 3);
+  const { data: dataProduct, isLoading, refetch } = useGetAllProducts({});
+  const productList = get(dataProduct, "data.data.productList", []);
+
+  const featuredProducts = productList?.slice(0, 3);
 
   return (
     <Layout>
-      {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-50 to-purple-50 py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
@@ -68,7 +71,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Featured Products</h2>
@@ -92,7 +94,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-16 bg-gradient-to-r from-purple-50 to-blue-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">Why Shop With Us</h2>

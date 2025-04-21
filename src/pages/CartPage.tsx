@@ -43,8 +43,8 @@ const CartPage = () => {
                     <div className="flex flex-col md:flex-row items-stretch">
                       <div className="md:w-24 md:h-24 flex-shrink-0 mb-4 md:mb-0">
                         <img 
-                          src={item.images[0]} 
-                          alt={item.title} 
+                          src={item.image[0]} 
+                          alt={item.product_name} 
                           className="rounded object-cover w-full h-full" 
                         />
                       </div>
@@ -52,7 +52,7 @@ const CartPage = () => {
                       <div className="md:ml-6 flex-grow">
                         <div className="flex justify-between">
                           <Link to={`/products/${item.id}`} className="font-medium hover:text-ecommerce-primary">
-                            {item.title}
+                            {item.product_name}
                           </Link>
                           <button
                             onClick={() => removeFromCart(item.id)}

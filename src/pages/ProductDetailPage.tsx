@@ -1,12 +1,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductById } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { get } from "lodash";
+import { useGetProductById } from "@/services/product-service";
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,8 +15,11 @@ const ProductDetailPage = () => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const { data: dataProduct, isLoading, error } = useGetProductById(id);
+  const product = get(dataProduct, "data.data.productData", null);
   
-  const product = id ? getProductById(id) : undefined;
+  // const product = id ? getProductById(id) : undefined;
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,15 +60,15 @@ const ProductDetailPage = () => {
           <div>
             <div className="bg-white rounded-lg overflow-hidden mb-4">
               <img 
-                src={product.images[activeImageIndex]} 
-                alt={product.title} 
+                src={product.image[0]} 
+                alt={product.product_name} 
                 className="w-full h-96 object-contain" 
               />
             </div>
             
-            {product.images.length > 1 && (
+            {product.image.length > 1 && (
               <div className="flex space-x-2">
-                {product.images.map((image, index) => (
+                {product.image.map((image, index) => (
                   <div 
                     key={index}
                     className={`border-2 rounded cursor-pointer ${
@@ -76,7 +80,7 @@ const ProductDetailPage = () => {
                   >
                     <img 
                       src={image} 
-                      alt={`${product.title} - view ${index + 1}`} 
+                      alt={`${product.product_name} - view ${index + 1}`} 
                       className="w-20 h-20 object-cover" 
                     />
                   </div>
@@ -87,9 +91,9 @@ const ProductDetailPage = () => {
           
           {/* Product Details */}
           <div>
-            <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
+            <h1 className="text-3xl font-bold mb-2">{product.product_name}</h1>
             <p className="text-2xl font-bold text-ecommerce-primary mb-4">
-              ${product.price.toFixed(2)}
+              ${product.price}
             </p>
             
             <div className="mb-6">

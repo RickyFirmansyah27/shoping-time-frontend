@@ -214,13 +214,13 @@ const CheckoutPage = () => {
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded bg-gray-200 overflow-hidden mr-3">
                         <img 
-                          src={item.images[0]} 
-                          alt={item.title} 
+                          src={item.image[0]} 
+                          alt={item.product_name} 
                           className="h-full w-full object-cover" 
                         />
                       </div>
                       <div>
-                        <div className="font-medium">{item.title}</div>
+                        <div className="font-medium">{item.product_name}</div>
                         <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
                       </div>
                     </div>

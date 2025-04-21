@@ -1,13 +1,19 @@
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
-import { ShoppingCart, User } from "lucide-react";
+import { authService } from "@/services/auth-service";
+import { ShoppingCart, User as UserIcon } from "lucide-react";
 
 const Header = () => {
   const { cartCount } = useCart();
-  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const isAuthenticated = authService.isAuthenticated();
+  const user = authService.getUser();
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
@@ -16,9 +22,8 @@ const Header = () => {
           <div className="bg-ecommerce-primary rounded-full p-2">
             <ShoppingCart className="h-5 w-5 text-white" />
           </div>
-          <span className="font-bold text-xl text-ecommerce-primary">ShopVerse</span>
+          <span className="font-bold text-xl text-ecommerce-primary">ShopingTime</span>
         </Link>
-
         <nav className="hidden md:flex space-x-6">
           <Link to="/" className="font-medium hover:text-ecommerce-primary transition-colors">
             Home
@@ -26,14 +31,13 @@ const Header = () => {
           <Link to="/products" className="font-medium hover:text-ecommerce-primary transition-colors">
             Products
           </Link>
-          <Link to="/about" className="font-medium hover:text-ecommerce-primary transition-colors">
-            About
-          </Link>
-          <Link to="/contact" className="font-medium hover:text-ecommerce-primary transition-colors">
+          <a
+            href="mailto:rickyfirmansyah2707@gmail.com"
+            className="font-medium hover:text-ecommerce-primary transition-colors"
+          >
             Contact
-          </Link>
+          </a>
         </nav>
-
         <div className="flex items-center space-x-4">
           <Link to="/cart" className="relative">
             <ShoppingCart className="h-6 w-6" />
@@ -43,22 +47,22 @@ const Header = () => {
               </span>
             )}
           </Link>
-          
+         
           {isAuthenticated ? (
             <div className="flex items-center space-x-4">
               <div className="hidden md:block">
                 <span className="text-sm font-medium">
-                  Hello, {user?.name} ({user?.role})
+                  Hello, {user?.name} ({user?.is_merchant ? 'Merchant' : 'Customer'})
                 </span>
               </div>
-              {user?.role === "merchant" && (
+              {user?.is_merchant && (
                 <Link to="/merchant/products">
                   <Button variant="outline" size="sm">
                     Manage Products
                   </Button>
                 </Link>
               )}
-              <Button variant="ghost" size="sm" onClick={logout}>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Logout
               </Button>
             </div>
@@ -66,7 +70,7 @@ const Header = () => {
             <div className="flex items-center space-x-2">
               <Link to="/login">
                 <Button size="sm" variant="ghost">
-                  <User className="h-4 w-4 mr-1" /> Login
+                  <UserIcon className="h-4 w-4 mr-1" /> Login
                 </Button>
               </Link>
             </div>

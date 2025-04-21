@@ -4,12 +4,12 @@ import { toast } from "sonner";
 
 export type Product = {
   id: string;
-  title: string;
+  product_name: string;
   description: string;
   price: number;
   quantity: number;
   sku: string;
-  images: string[];
+  image: string[];
 };
 
 type CartItem = Product & {
@@ -36,7 +36,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItem = prevItems.find((item) => item.id === product.id);
       
       if (existingItem) {
-        toast.success(`Updated ${product.title} quantity in cart`);
+        toast.success(`Updated ${product.product_name} quantity in cart`);
         return prevItems.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
@@ -44,7 +44,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         );
       }
       
-      toast.success(`Added ${product.title} to cart`);
+      toast.success(`Added ${product.product_name} to cart`);
       return [...prevItems, { ...product, quantity }];
     });
   };
@@ -53,7 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const product = items.find(item => item.id === productId);
     setItems((prevItems) => prevItems.filter((item) => item.id !== productId));
     if (product) {
-      toast.success(`Removed ${product.title} from cart`);
+      toast.success(`Removed ${product.product_name} from cart`);
     }
   };
 
@@ -99,6 +99,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {

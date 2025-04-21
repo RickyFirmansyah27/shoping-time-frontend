@@ -1,10 +1,11 @@
 
 import { Link } from "react-router-dom";
-import { Product, useCart } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Product } from '@/services/types'
 
 interface ProductCardProps {
   product: Product;
@@ -18,15 +19,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <Link to={`/products/${product.id}`} className="flex-grow">
         <div className="product-image-container h-48 md:h-56">
           <img 
-            src={product.images[0]} 
-            alt={product.title} 
+            src={product?.image[0]} 
+            alt={product?.product_name} 
             className="product-image w-full h-full object-cover" 
           />
         </div>
         <CardContent className="pt-4">
-          <h3 className="font-semibold text-lg truncate">{product.title}</h3>
+          <h3 className="font-semibold text-lg truncate">{product.product_name}</h3>
           <p className="text-ecommerce-muted text-sm mt-1 line-clamp-2">{product.description}</p>
-          <div className="mt-2 font-bold text-lg">${product.price.toFixed(2)}</div>
+          <div className="mt-2 font-bold text-lg">{(product?.price)}</div>
         </CardContent>
       </Link>
       <CardFooter className="border-t pt-4">
